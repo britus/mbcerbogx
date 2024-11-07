@@ -337,17 +337,11 @@ void MainWindow::on_btnSetRegValue_clicked()
     };
 
     auto sendAsRawRequest = [this](const CSCerboGxModel::TPacket& p, quint16 v) {
-        quint16 size = 2;
         QByteArray data;
-
         /* 1st: Register high btye */
         data.append(HIBYTE(p.regId));
         /* 2nd: Register low byte */
         data.append(LOBYTE(p.regId));
-        /* 1st: Value high btye */
-        data.append(HIBYTE(size));
-        /* 2nd: Value low byte */
-        data.append(LOBYTE(size));
         /* 1st: Value high btye */
         data.append(HIBYTE(v));
         /* 2nd: Value low byte */
