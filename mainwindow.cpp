@@ -312,7 +312,7 @@ void MainWindow::on_btnClose_clicked()
 void MainWindow::on_btnSetRegValue_clicked()
 {
     const auto mdut =
-       (ui->rbInputReg->isChecked() //
+       (ui->rbHoldingReg->isChecked() //
            ? QModbusDataUnit::HoldingRegisters
            : QModbusDataUnit::InputRegisters);
 
