@@ -336,47 +336,9 @@ void MainWindow::on_btnSetRegValue_clicked()
         connect(reply, &QModbusReply::errorOccurred, this, &MainWindow::onModbusError);
     };
 
-    auto sendAsRawRequest = [this](const CSCerboGxModel::TPacket& p, quint16 v) {
-        const quint16 size = sizeof(v);
-        QByteArray data;
-        /* 1st: Register high btye */
-        data.append(HIBYTE(p.regId));
-        /* 2nd: Register low byte */
-        data.append(LOBYTE(p.regId));
-        /* 1st: size high btye */
-        data.append(HIBYTE(size));
-        /* 2nd: size low byte */
-        data.append(LOBYTE(size));
-        /* 1st: Value high btye */
-        data.append(HIBYTE(v));
-        /* 2nd: Value low byte */
-        data.append(LOBYTE(v));
-
-        qDebug("SEND> unit=%03d register=%04d value=%d %s", p.unitId, p.regId, v, p.name.toUtf8().constData());
-
-        QModbusReply* reply;
-
-        QModbusRequest req(QModbusRequest::WriteSingleRegister, data);
-        if (!(reply = m_modbus.sendRawRequest(req, p.unitId))) {
-            qCritical() << "Unable to send Modbus request";
-            return;
-        }
-
-        reply->setProperty("packet", QVariant::fromValue(p));
-
-        connect(reply, &QModbusReply::finished, this, &MainWindow::onModbusReply);
-        connect(reply, &QModbusReply::destroyed, this, &MainWindow::onReplyDestroyed);
-        connect(reply, &QModbusReply::errorOccurred, this, &MainWindow::onModbusError);
-    };
-
     foreach (auto p, m_packets) {
         if (p.unitId == (quint8) ui->edUnitId->value() && p.regId == ui->edRegister->value()) {
-            if (ui->cbxSendAsMbReq->isChecked()) {
-                sendAsRawRequest(p, ui->edRegValue->value());
-            }
-            else {
-                sendAsDataUnit(p, ui->edRegValue->value());
-            }
+            sendAsDataUnit(p, ui->edRegValue->value());
             return;
         }
     }
